@@ -57,6 +57,7 @@ x<-c("status.of.existing.checking.account","duration.in.month","credit.history",
      "purpose","credit.amount","savings.account.and.bonds","present.employment.since",
      "installment.rate.in.percentage.of.disposable.income","other.debtors.or.guarantors",
      "property","age.in.years","other.installment.plans","housing")
+breaks.list = source("breaks.list.R")
 
 report(data_f.list,
        y,
