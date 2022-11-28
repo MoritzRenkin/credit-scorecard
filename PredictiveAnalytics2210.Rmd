@@ -1,7 +1,13 @@
 ---
-title: '\begin{center} Predictive Analytics: Application in the Credit Risk Domain \\ Case study teaching: Cheat sheet style \\ ("group project cover sheet") \end{center}'
-author: "Prof. Walter S.A. Schwaiger (IMW/TU Wien)"
-date: "Oct. 26, 2022 (PredictiveAnalytics2210.Rmd)"
+title: '\begin{center} Predictive Analytics: Application in the Credit Risk Domain \\ Case study: Group 10 \\ \end{center}'
+author:
+  - "Moritz Renkin (11807211)"
+  - "Mustafa"
+  - "Nils"
+  - "Jacob"
+
+abstract: "TODO Abstract"
+date: "November 30, 2021"
 output:
   pdf_document:
     toc: yes
@@ -9,10 +15,9 @@ output:
     #keep_tex: TRUE
     citation_package: natbib
 bibliography: literature.bib
-biblio-style: humannat
+biblio-style: natdin #humannat
 include-before:
   \pagebreak
-
 ---
 
 ```{r setup, include=FALSE}
@@ -23,14 +28,12 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 # Contextualization: Loading and transforming data
 
-Origins of Weight-Of-Evidence:
-\cite{Good}, \cite{Kullback}
+Origins of Weight-Of-Evidence: \cite{Good}, \cite{Kullback}
 
-URLs of web publications:  
-https://www.rdocumentation.org/packages/scorecard/versions/0.1.8  
-https://rpubs.com/ngyongkad/scorecard  
-https://stats.stackexchange.com/questions/419160/credit-scorecard-using-logistic-regression-on-r  
-
+URLs of web publications:\
+<https://www.rdocumentation.org/packages/scorecard/versions/0.1.8>\
+<https://rpubs.com/ngyongkad/scorecard>\
+<https://stats.stackexchange.com/questions/419160/credit-scorecard-using-logistic-regression-on-r>
 
 ## Methodological and linguistic overview
 
@@ -48,7 +51,7 @@ library(scorecard)
 
 The variables are distinguished among predictor (feature, independent) variables and response (label, dependent) variables.
 
-One response variable: creditability  
+One response variable: creditability\
 Five predictor variables: credit.amount, duration.in.month, credit.history, purpose, property
 
 ```{r}
@@ -78,7 +81,7 @@ str(data_f.df)
 
 Hint: Consider the change of the "creditability" data type from "factor" to "integer"
 
-***
+------------------------------------------------------------------------
 
 Calculating the information value of the predictor variables for selecting "informative" variables
 
@@ -86,10 +89,9 @@ Calculating the information value of the predictor variables for selecting "info
 iv(data.df,y="creditability")
 ```
 
-
 ## Splitting filtered data into train and test samples
 
-Splitting the filtered data frame into a list that contains data frames for the train and the test samples 
+Splitting the filtered data frame into a list that contains data frames for the train and the test samples
 
 ```{r}
 data_f.list <- split_df(data_f.df, 
@@ -100,9 +102,9 @@ lapply(data_f.list, dim)
 str(data_f.list$train)
 ```
 
-Hint: By default the splitting is 70/30 % for the train/test samples.It can be altered in the split_df() function by the argument "ratio=c(0.7,0.3)". The names of the splitted samples can be altered by the argument "name_dfs=c('train','test')."  
+Hint: By default the splitting is 70/30 % for the train/test samples.It can be altered in the split_df() function by the argument "ratio=c(0.7,0.3)". The names of the splitted samples can be altered by the argument "name_dfs=c('train','test')."
 
-***
+------------------------------------------------------------------------
 
 Generating a list for response variable: Dummy variable for defaults
 
@@ -121,24 +123,27 @@ Grouping (binning) predictor variables with respect to (w.r.t.) the WOE metric
 ### WOE-Binning of total data: bins.df
 
 Grouping all, i.e. total data: Needed for total cross validation purposes
+
 ```{r}
 bins.df = woebin(data_f.df, 
                  "creditability") 
 ```
 
-Hint: The default binning method is method="width". Other methods are "frequ" that support numerical variables as well as "tree" and "chimerge" supporting both, i.e. numerical and categorical variables which are used in the optimal binning approach. 
+Hint: The default binning method is method="width". Other methods are "frequ" that support numerical variables as well as "tree" and "chimerge" supporting both, i.e. numerical and categorical variables which are used in the optimal binning approach.
 
-***
+------------------------------------------------------------------------
 
 ### WOE-Binning of train and test data: bins.list
 
 Grouping only train data: Needed for separated train/test analysis
+
 ```{r}
 bins.list = woebin(data_f.list$train, 
                    "creditability",
                    save_breaks_list = "breaks.list") 
 ```
-Hint: The breaks list is saved, because it is needed to build a report for the scorecard modeling.  As the break list is saved in a separate R-script file, this file has to be loaded and the break list is saved as a variable that can be used in the scorecard modeling report.
+
+Hint: The breaks list is saved, because it is needed to build a report for the scorecard modeling. As the break list is saved in a separate R-script file, this file has to be loaded and the break list is saved as a variable that can be used in the scorecard modeling report.
 
 ```{r}
 breaks.list=list(
@@ -150,10 +155,9 @@ breaks.list=list(
  )
 ```
 
+------------------------------------------------------------------------
 
-***
-
-Plotting the bins (including bin statistics) 
+Plotting the bins (including bin statistics)
 
 ```{r fig.height=2.5, fig.align='center'}
 woebin_plot(bins.list)
@@ -164,11 +168,12 @@ woebin_plot(bins.list)
 ### Bin-WOE transformation of total data: data_woe.df
 
 Transforming total sample: Needed for cross validation purposes
+
 ```{r}
 data_woe.df <- woebin_ply(data_f.df, bins.df)
 ```
 
-***
+------------------------------------------------------------------------
 
 ### Bin-WOE transformation of train/test data: data_woe.list
 
@@ -181,7 +186,6 @@ lapply(data_woe.list, class)
 lapply(data_woe.list, dim)
 head(data_woe.list$train[,1:3])
 ```
-
 
 ## Bin-Group (GRP) transformation of predictor variables
 
@@ -198,11 +202,11 @@ head(data_grp.list$train[,4])
 
 # Generalized linear model (glm): Regressing response w.r.t. predictors
 
-## Logistic regression w.r.t. original predictors (data_f.list$train)
+## Logistic regression w.r.t. original predictors (data_f.list\$train)
 
-###  Logistic regression: Including original information of numeric predictors only
+### Logistic regression: Including original information of numeric predictors only
 
-For comparison to lm modeling see e.g. http://www.learnbymarketing.com/tutorials/explaining-the-lm-summary-in-r/
+For comparison to lm modeling see e.g. <http://www.learnbymarketing.com/tutorials/explaining-the-lm-summary-in-r/>
 
 ```{r}
 summary(glm(creditability ~ credit.amount + duration.in.month, 
@@ -212,7 +216,7 @@ summary(glm(creditability ~ credit.amount + duration.in.month,
 
 Hint: The selection of the train sample in the logistic regression model is important for being able to implement Out-of-Sample (OoS) tests for assessing the forecasting accuracy of the glm-models and the thereof derived scorecard-models.
 
-###  Logistic regression: Including original information of numeric, categorical and character predictors
+### Logistic regression: Including original information of numeric, categorical and character predictors
 
 ```{r}
 data_f.glm <- glm(creditability ~ ., 
@@ -221,35 +225,37 @@ data_f.glm <- glm(creditability ~ .,
 head(data_f.glm$model)
 ```
 
-***
+------------------------------------------------------------------------
 
 Regression results
+
 ```{r}
 #summary(data_f.glm)
 names(summary(data_f.glm))
 head(data_f.glm$coefficients)
 ```
 
-***
+------------------------------------------------------------------------
 
 Analysis of regression via "analyses of variances": anova()
+
 ```{r}
 anova(data_f.glm)
 ```
 
-***
+------------------------------------------------------------------------
 
 Analysis of regression via "variance inflation factors": vif()
+
 ```{r}
 vif(data_f.glm, merge_coef = TRUE)
 ```
 
-
-## Logistic regression w.r.t. WOE-transformed predictors (data_woe.list$train)
+## Logistic regression w.r.t. WOE-transformed predictors (data_woe.list\$train)
 
 The WOE-based logistic regression is the prefered regression approach as it delivers the most compact regression models.
 
-###  WOE-based logistic regression: Including numeric, categorical and character predictors
+### WOE-based logistic regression: Including numeric, categorical and character predictors
 
 ```{r}
 data_woe.glm <- glm(creditability ~ ., 
@@ -258,33 +264,36 @@ data_woe.glm <- glm(creditability ~ .,
 head(data_woe.glm$model)
 ```
 
-***
+------------------------------------------------------------------------
 
-Summary of regression: summary()  
+Summary of regression: summary()
+
 ```{r}
 summary(data_woe.glm)
 names(summary(data_woe.glm))
 data_woe.glm$coefficients
 ```
 
-***
+------------------------------------------------------------------------
 
 Analyses of variance: anova()
+
 ```{r}
 anova(data_woe.glm)
 ```
 
-***
+------------------------------------------------------------------------
 
 Variance inflation factors: vif()
+
 ```{r}
 vif(data_woe.glm, merge_coef = TRUE)
 ```
 
-
-###  WOE-based logistic regression: Automatic selection of the best AIC-model
+### WOE-based logistic regression: Automatic selection of the best AIC-model
 
 Automatic selection of optimal regression model via the Akaike Information Criteria (AIC)
+
 ```{r}
 glm_step <- step(data_woe.glm, 
                  direction="both", 
@@ -292,27 +301,29 @@ glm_step <- step(data_woe.glm,
 summary(eval(glm_step$call))
 ```
 
-###  WOE-based logistic regression: Including numeric predictors only
+### WOE-based logistic regression: Including numeric predictors only
 
 Numeric predictors: Regression with predictor variables that are of numeric data type
+
 ```{r}
 summary(glm(creditability ~ credit.amount_woe + duration.in.month_woe, 
                     family = binomial(), 
                     data = data_woe.list$train)) 
 ```
 
-## Logistic regression w.r.t. GRP-transformed predictors (data_grp.list$train)
+## Logistic regression w.r.t. GRP-transformed predictors (data_grp.list\$train)
 
-###  GRP-based logistic regression: Including GRP-information of numeric predictors only
+### GRP-based logistic regression: Including GRP-information of numeric predictors only
 
-Categorical regression type: Taking bin-groups as categorical variables (dummy variable representation) 
+Categorical regression type: Taking bin-groups as categorical variables (dummy variable representation)
+
 ```{r}
 summary(glm(creditability ~ credit.amount_bin + duration.in.month_bin, 
     family = binomial(), 
     data = data_grp.list$train))
 ```
 
-###  GRP-based logistic regression: Including numeric, categorical and character predictors
+### GRP-based logistic regression: Including numeric, categorical and character predictors
 
 ```{r}
 data_grp.glm <- glm(creditability ~ ., 
@@ -321,7 +332,7 @@ data_grp.glm <- glm(creditability ~ .,
 head(data_grp.glm$model)
 ```
 
-***
+------------------------------------------------------------------------
 
 ```{r}
 #summary(data_grp.glm)
@@ -329,7 +340,7 @@ names(summary(data_grp.glm))
 head(data_grp.glm$coefficients)
 ```
 
-***
+------------------------------------------------------------------------
 
 ```{r}
 anova(data_grp.glm)
@@ -360,24 +371,26 @@ Scorepoints are calculated by combing scorecard-model, which combines bin and gl
 ## Building the scorecard-model
 
 Building the scorecard via bin and glm information resulting from train sample
+
 ```{r}
 scorecard.scm <- scorecard(bins.list,
                        data_woe.glm)
 names(scorecard.scm)
 ```
 
-***
+------------------------------------------------------------------------
 
 Investigating the content of the scorecard
+
 ```{r}
 scorecard.scm$basepoints
 scorecard.scm$credit.amount
 ```
 
-
 ## Calculating the scorepoints by combinig scorecard-model and individual data
 
-Calculating the scorepoints (scores) 
+Calculating the scorepoints (scores)
+
 ```{r}
 score.df = scorecard_ply(data.df,
                          scorecard.scm, 
@@ -389,6 +402,7 @@ head(score.df)
 ## Calculating scorepoints for the splitted sample (train and test)
 
 Generating a score list
+
 ```{r}
 score.list <- lapply(data_f.list, 
                      function(x) scorecard_ply(x, scorecard.scm)) 
@@ -396,7 +410,6 @@ names(score.list)
 ```
 
 Hint: The only_total_score = TRUE (= default argument) has to be used for providing two compatible lists for further processing.
-
 
 ## Report (saved spreadsheet format): Scorecard modeling
 
@@ -413,8 +426,8 @@ report(data_f.list,
        save_report = "Report01")
 ```
 
-Hint: Generated report file is stored in xlsx-format.  
-Hint: The R-chunk is not included (i.e. {r include=FALSE}) as otherwise the report would be included in the pdf-file as well. 
+Hint: Generated report file is stored in xlsx-format.\
+Hint: The R-chunk is not included (i.e. {r include=FALSE}) as otherwise the report would be included in the pdf-file as well.
 
 \newpage
 
@@ -449,11 +462,12 @@ head(score.list$test)
 
 \newpage
 
-# Analyzing scoring results and testing forecasting accuracy  
+# Analyzing scoring results and testing forecasting accuracy
 
 ## Stability of score distributions: Population stability index (PSI)
 
 fig.width=5
+
 ```{r fig.height=2.5}
 psi.list <- perf_psi(score = score.list, 
                      label = default.list,
@@ -465,8 +479,7 @@ psi.list$psi
 psi.list$pic
 ```
 
-Hint: More details of per_psi() function are given @
-https://www.rdocumentation.org/packages/scorecard/versions/0.1.9/topics/perf_psi  
+Hint: More details of per_psi() function are given \@ <https://www.rdocumentation.org/packages/scorecard/versions/0.1.9/topics/perf_psi>
 
 ```{r eval=FALSE}
 perf_psi(score, label = NULL, title = NULL, x_limits = NULL,
@@ -475,7 +488,6 @@ perf_psi(score, label = NULL, title = NULL, x_limits = NULL,
 # e.g. # x_limits = c(250, 700),
 #      # x_tick_break = 50,
 ```
-
 
 ## Statistical analysis of scoring system
 
@@ -486,11 +498,11 @@ gains.df <- gains_table(score = score.list,
 ```
 
 Investigating the gains dataframe
+
 ```{r}
 head(gains.df)
 tail(gains.df)
 ```
-
 
 ## Cross validation of total and sub-samples
 
@@ -516,8 +528,8 @@ cv.list01
 
 ## Probability prediction accuracy (single dataset): In-Sample and Out-of-Sample testing
 
-
 ### IS-testing of predicted probabilities via train sample
+
 ```{r fig.height=2.5}
 perf_eva(pred = predProb.list$train, 
          label = data_woe.list$train$creditability, 
@@ -529,6 +541,7 @@ perf_eva(pred = predProb.list$train,
 Hint: Threshold of confusion matrix relates to the probability of default.
 
 ### OoS-testing of predicted probabilities via test sample
+
 ```{r fig.height=2.5}
 perf_eva(pred = predProb.list$test, 
          label = data_woe.list$test$creditability, 
@@ -540,6 +553,7 @@ perf_eva(pred = predProb.list$test,
 ## Scorepoint prediction accuracy (single dataset): In-Sample and Out-of-Sample testing
 
 ### IS-testing of predicted scores via train sample
+
 ```{r fig.height=2.5}
 perf_eva(pred = score.list$train, 
          label = data_f.list$train$creditability, 
@@ -552,6 +566,7 @@ perf_eva(pred = score.list$train,
 Hint: Threshold of confusion matrix relates to the scores.
 
 ### OoS-testing of predicted scores via test sample
+
 ```{r fig.height=2.5}
 perf_eva(pred = score.list$test, 
          label = data_f.list$test$creditability, 
@@ -564,6 +579,7 @@ perf_eva(pred = score.list$test,
 ## Prediction accuracy (multiple dataset): IS- and OoS-Testing in one
 
 Predicted probabilities
+
 ```{r fig.height=2.5}
 perf_eva(pred = predProb.list, 
          label = default.list,
@@ -573,6 +589,7 @@ perf_eva(pred = predProb.list,
 ```
 
 Predicted scores
+
 ```{r fig.height=2.5}
 perf_eva(pred = score.list, 
          label = default.list,
@@ -587,14 +604,15 @@ perf_eva(pred = score.list,
 
 ## Appendix: Essay style with formulas in LaTeX language
 
-**Group project assignment**: Write a scholarly essay with full sentences, correct citations and LaTeX formulas. 
+**Group project assignment**: Write a scholarly essay with full sentences, correct citations and LaTeX formulas.
 
 **Example essay style**: From a statistical perspective the transition from the $MPS$ to the VaR framework is related to switching the perspective from considering moments (parameters) of random variables, i.e. $\mu$ and $\sigma$, to considering the quantiles and corresponding probabilities of these variables. Specifically, the VaR measure specifies the risk of a random variable ($\tilde{P}$) via the threshold quantile ($VaR$) that is exceeded into the negative direction (i.e. $P \leq VaR$) with the loss probability ($\alpha$) or respectively, is exceeded into the positive direction (i.e. $P > VaR$) with the complementary probability, i.e. the confidence level ($1-\alpha$).
 
+```{=tex}
 \begin{align} \label{eq:VaR}
 \mathrm{Pr}\{ \tilde{P} \leq VaR \} = \alpha
 \end{align}
-
+```
 In formula (\ref{eq:VaR}) the definition of the Value-at-Risk (VaR) is given.
 
 \newpage
@@ -614,4 +632,3 @@ scorecard.scm$credit.amount
 ```
 
 \newpage
-
