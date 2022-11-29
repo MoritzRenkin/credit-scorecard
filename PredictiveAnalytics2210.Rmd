@@ -26,9 +26,9 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 \newpage
 
-# Abstract {-}
+# Abstract {.unnumbered}
 
-Credit scorecards are crucial tools in the credit assessment process. They are based on the prior performance of clients that share the same traits as a new client. Consequently, the goal of a credit scorecard is to estimate risk because credit scorecards are based on the past behavior of clients that share the same qualities as a prospective client. Therefore, the primary purpose of it is to either approve or reject a new client's loan request. The scorecard's function is to support this option. In this assignment, we'll compare and contrast the binning techniques known as weight-of-evidence (woe) binning and group binning. That’s why we have been using the existing scorecard. Moreover, certain model changes and binning splits will be made as a result of the addition of the 7 variables. To evaluate the effectiveness of the scorecard, the Gini coefficient is used. The major results of this research were to: demonstrate that group binning outperforms woe binning in out-of-sample predictions as measured by the Gini coefficient. The dependent variable, credibility, may be predicted more precisely when more independent variables are included.
+Credit scorecards are crucial tools in the credit assessment process. They are based on the prior performance of clients that share the same traits as a new client. Consequently, the goal of a credit scorecard is to estimate risk because credit scorecards are based on the past behavior of clients that share the same qualities as a prospective client. Therefore, the primary purpose of it is to either approve or reject a new client's loan request. The scorecard's function is to support this option. In this assignment, we'll compare and contrast the binning techniques known as weight-of-evidence (woe) binning and group binning. That's why we have been using the existing scorecard. Moreover, certain model changes and binning splits will be made as a result of the addition of the 7 variables. To evaluate the effectiveness of the scorecard, the Gini coefficient is used. The major results of this research were to: demonstrate that group binning outperforms woe binning in out-of-sample predictions as measured by the Gini coefficient. The dependent variable, credibility, may be predicted more precisely when more independent variables are included.
 
 # Introduction
 
@@ -38,18 +38,26 @@ For instance, a credit scorecard may award a borrower points based on the follow
 
 Therefore, group binning will be used as an extra binning strategy for this project's execution. To increase the model's Gini coefficient of prediction, a seventh independent variable was added, and the binning breaks were modified.
 
-
 # Predictive Analytics Research Methodology
 
 ## Predictor Variable Transformation
 
- Transforming predictor variables with the Weight of Evidence (WOE) approach. The WOE describes how well an independent variable may predict the outcome of a dependent variable. 
+Transforming predictor variables with the Weight of Evidence (WOE) approach. The WOE describes how well an independent variable may predict the outcome of a dependent variable.
 
-The WOE cannot be determined until the data has been separated into bins. This value is used for future calculations in place of the original value once the WOE has been located. As a result, upon transformation, the WOE will be the same for all lines that include the variable in the same bin. 
+The WOE cannot be determined until the data has been separated into bins. This value is used for future calculations in place of the original value once the WOE has been located. As a result, upon transformation, the WOE will be the same for all lines that include the variable in the same bin.
 
-If the WOE is greater than one, then the Distribution of the Goods is greater than the Bads, if the WOE is smaller than one, then the Distribution of the Goods is less than the Distribution of the Bads. 
+If the WOE is greater than one, then the Distribution of the Goods is greater than the Bads, if the WOE is smaller than one, then the Distribution of the Goods is less than the Distribution of the Bads.
 
 There are benefits to this transformation: Because the data is categorized with the simple treatment of the missing values, outliers are no longer a concern. Additionally, it supports categorical and continuous numbers.
+
+Using the two functions in R:
+
+ woebin: This function determines the best binning.
+
+ woebin_ply: This function applies the provided binning information to convert the values in the original data to WOE values. 
+
+There will be some drawbacks for WOE as well. One is that binning may result in information loss. Another is the possibility of an unresearched link between the independent variables.
+
 
 ```{=tex}
 \begin{align} \label{eq:WOE}
@@ -72,11 +80,9 @@ Formally, the logistic regression model estimates probability $p$ of the Bernoul
 p(k) = \frac{e^{{\beta}_0 + {\beta}_1k}}{1 + e^{{\beta}_0 + {\beta_1}k}} = \frac{1}{1 + e^-({{\beta}_0 + {\beta_1}k})}
 \end{align}
 ```
+Figure TODO depicts the logistic regression for two examplary attributes.
 
-Figure TODO depicts the logistic regression for two exeplamary attributes.
-
-In the domain of Credit Scoring, logistic regression is one of the most widely used statistical models. \cite[p.~19]{Bolton2010LogisticRA}
-
+In the domain of Credit Scoring, logistic regression is one of the most widely used statistical models. \cite[p.~19]{bolton2009logistic}
 
 ## Building Scorecards
 
@@ -96,16 +102,16 @@ lorem impsum
 
 ## Loading external data
 
- requesting the loading of the "germancredit" built-in data set while creating the scorecard, we may leverage a variety of variables in our project to forecast creditability based on a subset of these variables. 
- 
+requesting the loading of the "germancredit" built-in data set while creating the scorecard, we may leverage a variety of variables in our project to forecast creditability based on a subset of these variables.
+
 ```{r}
 # Importing of library and data
 library(scorecard)
 data("germancredit") 
 ```
-In order to achieve the aim of predicting creditability, we will take into account 7 variables from the "germancredit" data and determine which one has the most influence on the precision of a predicted desired value.
-Considering the Filtering of variables with >= iv_limit = 0.02, <= missing_limit = 0.95 
- and <= identical_limit_limit = 0.95.
+
+In order to achieve the aim of predicting creditability, we will take into account 7 variables from the "germancredit" data and determine which one has the most influence on the precision of a predicted desired value. Considering the Filtering of variables with \>= iv_limit = 0.02, \<= missing_limit = 0.95 and \<= identical_limit_limit = 0.95.
+
 ```{r}
 data_f.df = var_filter(germancredit, y="creditability")
 ```
@@ -122,31 +128,32 @@ The model can make a forecast that is as accurate as feasible since there is eno
 
 ## Weight-Of-Evidence (WOE)-Binning
 
+Using the two functions in R: woebin & woebin_ply. As shown below:
 
-Using the two functions in R: woebin & woebin_ply. As shown below: 
+-   WOE-Binning of predictor variables (used method: "width"):
 
--	WOE-Binning of predictor variables (used method: “width”):
-
+```{r}
 bins.list = woebin(data_f.list$train,
                    "creditability",
                    save_breaks_list = "breaks.list")
 head(bins.list)
-woebin_plot (bins.list)
+# woebin_plot (bins.list)
+```
 
--	Transformation of predictor variables WOE and GRP: 
-      
-  data_woe.list = lapply(data_f.list,
-                       function(x) woebin_ply(x, bins.list))
-lapply(data_woe.list, class)
-lapply(data_woe.list, dim) 
+-   Transformation of predictor variables WOE and GRP:
 
-data_grp.list = lapply(data_f.list,
-                       function(x) woebin_ply(x, bins.list, to = 'bin'))
-lapply(data_grp.list, class)
-lapply(data_grp.list, dim)
-## Generalized linear model (glm): Regressing response w.r.t. predictors
+```{r}
+data_woe.list = lapply(data_f.list, function(x) woebin_ply(x, bins.list)) 
+lapply(data_woe.list, class) 
+lapply(data_woe.list, dim)
+```
 
-lorem impsum
+```{r}
+data_grp.list = lapply(data_f.list, function(x) 
+woebin_ply(x, bins.list, to = 'bin')) 
+lapply(data_grp.list, class) 
+lapply(data_grp.list, dim) ## Generalized linear model (glm): Regressing response w.r.t. predictors
+```
 
 ### Logistic regression w.r.t. WOE-transformed predictors (data_woe.list\$train)
 
@@ -196,9 +203,8 @@ LVA: "Risk Model Management" (summer term by Dr. Lederer) by using the construct
 
 ## Loading libraries
 
-```{r}
 library(scorecard)
-```
+
 
 ## Loading external data
 
