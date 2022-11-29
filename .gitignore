@@ -4,4 +4,8 @@
 .Ruserdata
 breaks.list.R
 *.xlsx
+*.log
+*.aux
+*.tex
+*.toc
 PredictiveAnalytics2210_files

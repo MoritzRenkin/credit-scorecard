@@ -1,5 +1,5 @@
 ---
-title: '\begin{center} Predictive Analytics: Application in the Credit Risk Domain \\ Case study: Group 10 \\ \end{center}'
+title: '\begin{center} Predictive Analytics: Credit Risk Scorecard Application \\ Case study: Group 15 \\ \end{center}'
 author:
   - "Moritz Renkin (11807211)"
   - "Mustafa"
@@ -26,6 +26,87 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 \newpage
 
+# Abstract
+
+lorem impsum
+
+# Introduction
+lorem
+
+
+# Predictive Analytics Research Methodology
+
+## Predictor Variable Transformation
+
+lorem impsum
+
+## Logistic Regression Analysis
+
+lorem impsum
+
+## Building Scorecards
+
+lorem impsum
+
+## Forecasting Scorepoints and default Probabilities
+
+lorem impsum
+
+## Forecasting Accuracy Testing
+
+lorem impsum
+
+# Empirical results
+
+lorem impsum
+
+## Loading external data
+
+lorem impsum
+
+## Splitting filtered data into train and test samples
+
+lorem impsum
+
+## Weight-Of-Evidence (WOE)-Binning
+
+lorem impsum
+
+## Generalized linear model (glm): Regressing response w.r.t. predictors
+
+lorem impsum
+
+### Logistic regression w.r.t. WOE-transformed predictors (data_woe.list\$train)
+
+lorem impsum
+
+### Logistic regression w.r.t. GRP-transformed predictors (data_grp.list\$train)
+
+lorem impsum
+
+## Building the scorecard-model
+
+lorem impsum
+
+### Calculating scorepoints for the splitted sample (train and test)
+
+lorem impsum
+
+## Predicting probabilities and scorepoints
+
+lorem impsum
+
+## Testing prediction accuracy
+
+lorem impsum
+
+# Summary
+
+lorem impsum
+
+````{=html}
+<!-- -----------------------------------------------------------
+FROM TEMPLATE
 # Contextualization: Loading and transforming data
 
 Origins of Weight-Of-Evidence: \cite{Good}, \cite{Kullback}
@@ -632,3 +713,5 @@ scorecard.scm$credit.amount
 ```
 
 \newpage
+-->
+````
