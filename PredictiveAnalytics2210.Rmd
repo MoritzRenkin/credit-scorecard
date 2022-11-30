@@ -98,23 +98,20 @@ Include test-train split
 
 # Empirical results
 
-lorem impsum
+In this section the approach and the results of building a Out-of-Sample Gini coefficient maximizing scorecard model with only seven predictor variables are presented step-by-step. The scorecard is built on the "germancredit" data which is included in the "scorecard" library.
 
 ## Loading and Preparing the Data
 
-The dataset "germancredit" is used from the library "scorecard". Below the import process is shown. The "germancredit" data has 21 variables, 7 will remain for our scorecard model and 1 dependent variable the "creditability". In the following the explained theoretical approach is used to filter out the 7 most significant predictor variables, relevant for the credibility of a possible customer. 
+The dataset "germancredit" is used from the library "scorecard". Below the import process is shown. The "germancredit" data has 21 variables int total. Seven predictor variables and a single dependent variable the "creditability" will remain for our scorecard model.
 
-```{r echo=T, results='hide'}
+```{r echo=T}
 # Importing of library and data
 library(scorecard)
 data("germancredit")
-ncol(germancredit)
-
+names(germancredit)
 ```
 
-The first step of finding relevant predictor variables is done with the "var_filter()" function. The default limits and rates for iv_limit, missing_rate & identical_rate mentioned below are used. The iv_limit excludes every variables whose information value is lower or equal to 0.02 in respect to our depedent variable "creditability". Through this filtering process 7 predictor variables are already excluded which are not eligible for the scorecard model. In the data_f.df 14 varibales are remaing, 13 posible predictor varibales and one dependent variable "creditablitity". 
-
-
+The first step of finding relevant predictor variables is done with the "var_filter()" function on the entire dataset. The default limits and rates for iv_limit, missing_rate & identical_rate mentioned below are used. The iv_limit excludes every variables whose information value is lower or equal to 0.02 in respect to our depedent variable "creditability". Through this filtering process 7 predictor variables are already excluded which are not eligible for the scorecard model as they cannot meet the explained criteria. In the "data_f.df" 14 variables are remaining, 13 possible predictor variables and one dependent variable "creditablitity". 
 
 ```{r echo=T, results='hide'}
 # Filtering of variables with iv_limit >= 0.02, missing_rate <= 0.95 
@@ -130,7 +127,7 @@ ncol(data_f.df)
 
 ## Splitting the Data into Train and Test Samples
 
-The remaining 13 possible predictor varibales are splitted with the split_df function into train and test data with a ratio fo 75% train and 25% test data. After that data_f.list is reformated to be useable in the later process. 
+The remaining 13 possible predictor variables are splitted with the split_df function into train and test data with a ratio fo 75% train and 25% test data. Afterwards data_f.list is reformated to be useable in the later process. The following scorecard model is only trained on the train data. The test data is later used to validate and test the performance of the scorecard model.
 
 ```{r echo=T, results='hide'}
 # Splitting data into train and test data with ratio 0.75
@@ -140,16 +137,14 @@ lapply(data_f.list,class)
 lapply(data_f.list, dim)
 ```
 
-The "default.list" is generated for later use In-Sample and Out-of-Sample testing. 
-
-```{r echo=FALSE, results='hide'}
+```{r include=FALSE, results='hide'}
 # Generation a list for response variable: Dummy variable for defaults
 default.list = lapply(data_f.list, function(x) x$creditability)
 ```
 
 ## Weight-Of-Evidence (WOE)-Binning
 
-In the following the WOE-Binning is done with the 'woebin' and 'woebin_ply' function. The breaks are generated automated by the function and are saved in the "breaks.list". For the 'woebin' the default 'method="width"' is used. 
+In the following the WOE-Binning is done with the 'woebin' function. For the 'woebin' function the default 'method="tree"' is used to generate the optimal binning of both numerical and categorical predictor variables. The breaks are generated automatically by the function and are saved in the "breaks.list" file.  
 
 
 ```{r echo=T, results='hide'}
@@ -159,6 +154,8 @@ bins.list = woebin(data_f.list$train,
                    "creditability",
                    save_breaks_list = "breaks.list")
 ```
+
+This breaks.list file needs to be run as well to generate a report on the entire scoreboard model process later on.
 
 ```{r include=FALSE, results='hide'}
 options(scorecard.bin_close_right = FALSE) 
@@ -179,7 +176,7 @@ breaks.list=list(
  )
 ```
 
-Below the 7 predictor variables with the highest information value are shown in descending order. This does not mean that these values are the final 7 predictor variables. The Full plots of all predictor variables can be viewed in the Appendix. 
+Below the binning of the seven predictor variables with the highest information value is shown in descending order. This does not mean that these values are the final seven predictor variables. The full plots of all predictor variables can be viewed in the Appendix. 
 
 ```{r fig.height=2, fig.align='center', echo=FALSE}
 woebin_plot(bins.list$status.of.existing.checking.account)
@@ -191,7 +188,9 @@ woebin_plot(bins.list$age.in.years)
 woebin_plot(bins.list$savings.account.and.bonds)
 ```
 
-After the WOE-Binning, the train and test data is transformed with the generated 'bins.list' into the prescribed format for later usage in glm and scorecard building.
+## Transformation of predictor variables
+
+The train and test data is transformed with the generated information by 'woebin' into WOE-based predictor variables. These can be used later in glm and scorecard building. This is done by using the function 'woebin_ply'.
 
 ```{r echo=TRUE, results='hide'}
 # WOE-Transformation of train and test data
@@ -201,7 +200,8 @@ lapply(data_woe.list, class)
 lapply(data_woe.list, dim)
 ```
 
-Transformation of "data_f.list", "bins.list" into data_grp.list - Bin-Group (GRP). We will later use this for validation and the glm. The functionality of building a scorecard with the GRP-Binning isn't implemented in the package at the current state. 
+In addition, the train and test data can be transformed into Bin-Group (GRP) based predictor variables using the bin borders or breaks. The functionality of building a scorecard with the GRP-Transforamtion is not yet implemented in the package at the current state, but the GRP-Transformation is later used for comparison and validation.
+
 ```{r echo=TRUE, results='hide'}
 # Bin-Group (GRP) Transformation of train and test data
 data_grp.list = lapply(data_f.list, 
@@ -271,8 +271,6 @@ data_grp_second_iteration.glm <- glm(creditability ~
 
 ## Building the scorecard-model
 
-### Scorecard-model w.r.t. WOE-transformed predictors
-
 The scorecard is built with the logistic regression model of the seven WOE-transformed variables and is saved in "scorecard_woe_second_iteration.scm". The scorecard contains the baseline points and the points associated with every bin. In the output of the command `scorecard_woe_second_iteration.scm$purpose`, the points for each bin of the "purpose" predictor variable is displayed. When the purpose of a credit is e.g. furniture, equipment or repairs, the credit applicant receives -3 points for this predictor variable.
 
 ```{r, echo=TRUE}
@@ -315,20 +313,40 @@ report(data_f.list,
        save_report = "Report_WOE_second_iteration")
 ```
 
-### Scorecard-model w.r.t. GRP-transformed predictors
-
 Building a scorecard with GRP-transformed predictor variables is unfortunately not supported by the "scorecard" library. Therefore, no report can be created as well. Nevertheless, the performance of the logistic model of the GRP-transformed predictor variables is compared with the logistic model of the WOE-transformed predictor variables in the next section.
 
-## Predicting (forecasting) probabilities and scorepoints (jacob)
+## Predicted probabilities and scorepoints
 
-Below the first 6 predicted scores are shown for the train and test data.
+With the scorecard of the logistic regressions of both WOE- and GRP-transformed predictors and the WOE-transformed predictor variables, the predicted probabilities and scorepoints can be calculated. The predicted probabilities forecast the probability of default for each applicant in the "germancredit" data. The first predicted probabilities of both transformations are displayed below.
 
 ```{r echo=TRUE}
-# Prediction of scorecards for the sub-samples
-head(score_woe_second_iteration.list$train)
-head(score_woe_second_iteration.list$test)
+# Predicted probabilties w.r.t. WOE-transformed predictors
+predProb_woe.list <- lapply(data_woe.list,
+                        function(x) predict(data_woe_second_iteration.glm,
+                                            type = 'response',
+                                            x)
+)
+head(predProb_woe.list$train)
 ```
-todo
+
+```{r echo=TRUE}
+# Predicted probabilties w.r.t. GRP-transformed predictors
+predProb_grp.list <- lapply(data_grp.list,
+                            function(x) predict(data_grp_second_iteration.glm,
+                                                type = 'response',
+                                                x)
+)
+head(predProb_grp.list$train)
+```
+
+The calculated scorepoints of the applicants of the "germancredit" data can only be calculated for WOE-transformed predictor variables because no scorecard could be built for the GRP-transformed predictors.
+
+```{r echo=TRUE}
+# Predicted scorepoints w.r.t. WOE-transformed predictors
+head(score_woe_second_iteration.list$train)
+```
+
+From the report that was created above for the scorecard with WOE-transformed predictor variables, it can be can be seen that the target score is 600 and the target predicted probability is 5,26%. That means, that applicants with a score below 600 and with a predicted probability below 5,26& are declined. 
 
 ## Gini Coefficient In-Sample and Out-of-Sample
 Below the prediction power of the proposed predictor variables is validated through the In-Sample and Out-of-Sample testing. The full validation is done with the predicted scores in "score_woe_second_iteration.list" and the function perf_eva. To further validate the scorecard the Gini-Coefficient of "second_woe_second_iteration.list", "data_woe_second_iteration.glm" and "data_grp_second_iteration.glm" is calculated with the perf_eva function. 
@@ -380,7 +398,6 @@ perf_eva(pred = predProb_grp.list,
 
 As expected the In-Sample Gini-Coefficient is much higher as the OoS-Gin-Coeficient, but still performing well with over 50%.
 <--! Hier fehlt noch Text -->
-
 
 # Summary
 
