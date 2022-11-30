@@ -179,6 +179,7 @@ breaks.list=list(
  housing=c("rent", "own", "for free")
  )
 ```
+
 Below the 7 predictor variables with the highest information value are shown in descending order. This does not mean that these values are the final 7 predictor variables. The Full plots of all predictor variables can be viewed in the Appendix. 
 
 ```{r fig.height=2, fig.align='center', echo=FALSE}
@@ -310,29 +311,69 @@ report(data_f.list,
 
 Building a scorecard with GRP-transformed predictor variables is unfortunately not supported by the "scorecard" library. Therefore, no report can be created as well. Nevertheless, the performance of the logistic model of the GRP-transformed predictor variables is compared with the logistic model of the WOE-transformed predictor variables in the next section.
 
-## Predicting (forecasting) probabilities and scorepoints
+## Predicting (forecasting) probabilities and scorepoints (jacob)
 
+Below the first 6 predicted scores are shown for the train and test data.
+
+```{r echo=TRUE}
+# Prediction of scorecards for the sub-samples
+head(score_woe_second_iteration.list$train)
+head(score_woe_second_iteration.list$test)
+```
 todo
 
 ## Gini Coefficient In-Sample and Out-of-Sample
+Below the prediction power of the proposed predictor variables is validated through the In-Sample and Out-of-Sample testing. The full validation is done with the predicted scores in "score_woe_second_iteration.list" and the function perf_eva. To further validate the scorecard the Gini-Coefficient of "second_woe_second_iteration.list", "data_woe_second_iteration.glm" and "data_grp_second_iteration.glm" is calculated with the perf_eva function. 
 
-```{r, echo=FALSE, results='hide'}
-# Validation of GRP transformed logistic regression
-# Probability prediction of train and test samples
-predProb_grp.list <- lapply(data_grp.list,
-                            function(x) predict(data_grp_second_iteration.glm,
-                                                type = 'response',
-                                                x)
-)
-```
-
-```{r, echo=FALSE}
-perf_eva(pred = predProb_grp.list,
+```{r echo=TRUE}
+#Scorecard Model second iteration
+perf_eva(pred = score_woe_second_iteration.list,
          label = default.list,
          binomial_metric = c("gini","auc","r2", "rmse"),
          show_plot=c("roc","ks"),
          confusion_matrix = TRUE)
 ```
+
+
+```{r echo=TRUE}
+#Second iteration GLM with WOE-Binning 
+predProb_woe.list <- lapply(data_woe.list,
+                        function(x) predict(data_woe_second_iteration.glm,
+                                            type = 'response',
+                                            x)
+)
+perf_eva(pred = predProb_woe.list,
+         label = default.list,
+         binomial_metric = c("gini"),
+         show_plot=c(),
+         confusion_matrix = FALSE)
+```
+
+
+```{r echo=TRUE}
+#Second iteration GLM with GRP-Binning
+predProb_grp.list <- lapply(data_grp.list,
+                            function(x) predict(data_grp_second_iteration.glm,
+                                                type = 'response',
+                                                x)
+)
+perf_eva(pred = predProb_grp.list,
+         label = default.list,
+         binomial_metric = c("gini"),
+         show_plot=c(),
+         confusion_matrix = FALSE)
+```
+
+|Method | In-Sample Gini-Coefficient | Out-of-Sample Gini-Coefficient |
+ | -------- | -------- | ------- |
+|Second iteration Scorecard | Wert eintragen | Wert eintragen |
+|Second iteration WOE-Binning | Wert eintragen | Wert eintragen |
+|Second iteration GRP-Binning | Wert eintragen | Wert eintragen |
+
+As expected the In-Sample Gini-Coefficient is much higher as the OoS-Gin-Coeficient, but still performing well with over 50%.
+<--! Hier fehlt noch Text -->
+
+
 # Summary
 
 TODO
