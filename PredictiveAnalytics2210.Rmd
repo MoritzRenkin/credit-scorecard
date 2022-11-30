@@ -266,11 +266,13 @@ data_grp_second_iteration.glm <- glm(creditability ~ status.of.existing.checking
 
 ### Scorecard-model w.r.t. WOE-transformed predictors
 
-The scorecard is built with the logistic regression model of the seven WOE-transformed variables and is saved in "scorecard_woe_second_iteration.scm".
+The scorecard is built with the logistic regression model of the seven WOE-transformed variables and is saved in "scorecard_woe_second_iteration.scm". The scorecard contains the baseline points and the points associated with every bin. In the output of the command `scorecard_woe_second_iteration.scm$purpose`, the points for each bin of the "purpose" predictor variable is displayed. When the purpose of a credit is e.g. furniture, equipment or repairs, the credit applicant receives -3 points for this predictor variable.
 
 ```{r, echo=TRUE}
 scorecard_woe_second_iteration.scm <- scorecard(bins.list,
                                                data_woe_second_iteration.glm)
+names(scorecard_woe_second_iteration.scm)
+scorecard_woe_second_iteration.scm$purpose
 ```
 
 The scores for the entire "germancredit" data are calculated and saved in "score_woe_second_iteration.df"
@@ -289,7 +291,7 @@ score_woe_second_iteration.list <- lapply(data_f.list,
                                             scorecard_woe_second_iteration.scm))
 ```
 
-A report is generated for the scorecard model that includes information on the dataset, model coefficients, model performance, WOE binning, scorecard, population stability, and gains.
+A report can also be generated for this scorecard model which includes information on the dataset, model coefficients, model performance, WOE binning, scorecard, population stability, and gains.
 
 ```{r echo=TRUE,results='hide', fig.show='hide'}
 # Report of Scoreboard with WOE-transformed predictor variables
