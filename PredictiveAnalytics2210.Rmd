@@ -102,12 +102,13 @@ lorem impsum
 
 ## Loading and Preparing the Data
 
-requesting the loading of the "germancredit" built-in data set while creating the scorecard, we may leverage a variety of variables in our project to forecast creditability based on a subset of these variables.
+We're using a predefined dataset "germancredit" from the libaray "scorecard". Below the import process is shown. The "germancredit" data has 21 variables, 7 will remain for our scorecard model. In the following we will use the explained theoretical approach to filter out the 7 most significant predictor variables, relevant for the credibility of a possible customer. 
 
 ```{r}
 # Importing of library and data
 library(scorecard)
 data("germancredit")
+ncol(germancredit)
 
 ```
 
