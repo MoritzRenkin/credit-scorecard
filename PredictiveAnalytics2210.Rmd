@@ -147,7 +147,6 @@ The "default.list" is generated for later use In-Sample and Out-of-Sample testin
 default.list = lapply(data_f.list, function(x) x$creditability)
 ```
 
-
 ## Weight-Of-Evidence (WOE)-Binning
 
 In the following the WOE-Binning is done with the 'woebin' and 'woebin_ply' function. The breaks are generated automated by the function and are saved in the "breaks.list". For the 'woebin' the default 'method="width"' is used. 
@@ -211,7 +210,6 @@ lapply(data_grp.list, class)
 lapply(data_grp.list, dim)
 ```
 
-
 ## Generalized linear model (glm): Regressing response w.r.t. predictors
 
 In this section, the logistic regression models are built. These models are used to select the seven most significant variables and subsequently to build the scorecard model with the chosen variables.
@@ -219,7 +217,7 @@ In this section, the logistic regression models are built. These models are used
 ### Selection of seven variables with Logistic regression w.r.t. WOE-transformed predictors
 In order to select the seven most significant variables, a logistic regression is performed on the WOE-transformed predictor variables of the train data. The seven predictor variables which have the lowest significance value, are selected.
 
-```{r, echo=TRUE}
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 data_woe_first_iteration.glm <- glm(creditability ~ .,
                                     family = binomial(),
                                     data = data_woe.list$train)
@@ -242,12 +240,16 @@ The following seven predictor variables are selected as they have the lowest sig
 The logistic regression model with the seven selected WOE-transformed predictor variables is built on the train data and saved in "data_woe_second_iteration.glm".
 
 ```{r, echo=TRUE}
-data_woe_second_iteration.glm <- glm(creditability ~ status.of.existing.checking.account_woe
-                                     +duration.in.month_woe
-                                     +credit.history_woe+purpose_woe+credit.amount_woe
-                                     +savings.account.and.bonds_woe+age.in.years_woe,
-                                    family = binomial(),
-                                    data = data_woe.list$train)
+data_woe_second_iteration.glm <- glm(creditability ~ 
+                                      status.of.existing.checking.account_woe
+                                      + duration.in.month_woe
+                                      + credit.history_woe
+                                      + purpose_woe
+                                      + credit.amount_woe
+                                      + savings.account.and.bonds_woe
+                                      + age.in.years_woe,
+                                        family = binomial(),
+                                        data = data_woe.list$train)
 ```
 
 ### Logistic regression w.r.t. selected GRP-transformed predictors
@@ -255,10 +257,14 @@ data_woe_second_iteration.glm <- glm(creditability ~ status.of.existing.checking
 The logistic regression model with the seven selected GRP-transformed predictor variables is built on the train data and saved in "data_grp_second_iteration.glm".
 
 ```{r, echo=TRUE}
-data_grp_second_iteration.glm <- glm(creditability ~ status.of.existing.checking.account_bin
-                                     +duration.in.month_bin
-                                     +credit.history_bin+purpose_bin+credit.amount_bin
-                                     +savings.account.and.bonds_bin+age.in.years_bin,
+data_grp_second_iteration.glm <- glm(creditability ~ 
+                                      status.of.existing.checking.account_bin
+                                      + duration.in.month_bin
+                                      + credit.history_bin
+                                      + purpose_bin
+                                      + credit.amount_bin
+                                      + savings.account.and.bonds_bin
+                                      + age.in.years_bin,
                                      family = binomial(),
                                      data = data_grp.list$train)
 ```
@@ -267,11 +273,13 @@ data_grp_second_iteration.glm <- glm(creditability ~ status.of.existing.checking
 
 ### Scorecard-model w.r.t. WOE-transformed predictors
 
-The scorecard is built with the logistic regression model of the seven WOE-transformed variables and is saved in "scorecard_woe_second_iteration.scm".
+The scorecard is built with the logistic regression model of the seven WOE-transformed variables and is saved in "scorecard_woe_second_iteration.scm". The scorecard contains the baseline points and the points associated with every bin. In the output of the command `scorecard_woe_second_iteration.scm$purpose`, the points for each bin of the "purpose" predictor variable is displayed. When the purpose of a credit is e.g. furniture, equipment or repairs, the credit applicant receives -3 points for this predictor variable.
 
 ```{r, echo=TRUE}
 scorecard_woe_second_iteration.scm <- scorecard(bins.list,
                                                data_woe_second_iteration.glm)
+names(scorecard_woe_second_iteration.scm)
+scorecard_woe_second_iteration.scm$purpose
 ```
 
 The scores for the entire "germancredit" data are calculated and saved in "score_woe_second_iteration.df"
@@ -290,7 +298,7 @@ score_woe_second_iteration.list <- lapply(data_f.list,
                                             scorecard_woe_second_iteration.scm))
 ```
 
-A report is generated for the scorecard model that includes information on the dataset, model coefficients, model performance, WOE binning, scorecard, population stability, and gains.
+A report can also be generated for this scorecard model which includes information on the dataset, model coefficients, model performance, WOE binning, scorecard, population stability, and gains.
 
 ```{r echo=TRUE,results='hide', fig.show='hide'}
 # Report of Scoreboard with WOE-transformed predictor variables
