@@ -225,7 +225,7 @@ data_woe_first_iteration.glm <- glm(creditability ~ .,
 summary(data_woe_first_iteration.glm)
 ```
 
-The following seven predictor variables are selected as they have the lowest significance value (<0.01) and are therefore selected:
+The following seven predictor variables are selected as they have the lowest significance value (<0.01):
 \begin{itemize}
 \item{status.of.existing.checking.account}
 \item{duration.in.month}
