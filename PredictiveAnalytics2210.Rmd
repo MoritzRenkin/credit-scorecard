@@ -102,9 +102,9 @@ lorem impsum
 
 ## Loading and Preparing the Data
 
-We're using a predefined dataset "germancredit" from the libaray "scorecard". Below the import process is shown. The "germancredit" data has 21 variables, 7 will remain for our scorecard model. In the following we will use the explained theoretical approach to filter out the 7 most significant predictor variables, relevant for the credibility of a possible customer. 
+The dataset "germancredit" is used from the library "scorecard". Below the import process is shown. The "germancredit" data has 21 variables, 7 will remain for our scorecard model and 1 dependent variable the "creditability". In the following the explained theoretical approach is used to filter out the 7 most significant predictor variables, relevant for the credibility of a possible customer. 
 
-```{r}
+```{r echo=T, results='hide'}
 # Importing of library and data
 library(scorecard)
 data("germancredit")
@@ -112,20 +112,25 @@ ncol(germancredit)
 
 ```
 
-In order to achieve the aim of predicting creditability, we will take into account 7 variables from the "germancredit" data and determine which one has the most influence on the precision of a predicted desired value. 
+The first step of finding relevant predictor variables is done with the "var_filter()" function. The default limits and rates for iv_limit, missing_rate & identical_rate mentioned below are used. The iv_limit excludes every variables whose information value is lower or equal to 0.02 in respect to our depedent variable "creditability". Through this filtering process 7 predictor variables are already excluded which are not eligible for the scorecard model. In the data_f.df 14 varibales are remaing, 13 posible predictor varibales and one dependent variable "creditablitity". 
 
 
 
 ```{r echo=T, results='hide'}
-# Filtering of variables with >= iv_limit = 0.02, <= missing_limit = 0.95 
-# and <= identical_limit_limit = 0.95
+# Filtering of variables with iv_limit >= 0.02, missing_rate <= 0.95 
+# and identical_rate <= 0.95
 data_f.df = var_filter(germancredit, y="creditability")
+
+```
+
+```{r echo=T, results='markup'}
+ncol(data_f.df)
 ```
 
 
 ## Splitting the Data into Train and Test Samples
 
-It is essential to draw conclusions from historical data and use the information gained to make precise predictions about credibility in order to have a scorecard that can be relied upon. As a result, we must divide the data into two sets that we loaded and filtered in the earlier phases. The sets consist of a training set and a test set, with the training set accounting for 75% and the test set for 25% of the total.
+The remaining 13 possible predictor varibales are splitted with the split_df function into train and test data with a ratio fo 75% train and 25% test data. After that data_f.list is reformated to be useable in the later process. 
 
 ```{r echo=T, results='hide'}
 # Splitting data into train and test data with ratio 0.75
@@ -135,18 +140,18 @@ lapply(data_f.list,class)
 lapply(data_f.list, dim)
 ```
 
+The "default.list" is generated for later use In-Sample and Out-of-Sample testing. 
+
 ```{r echo=FALSE, results='hide'}
 # Generation a list for response variable: Dummy variable for defaults
 default.list = lapply(data_f.list, function(x) x$creditability)
 ```
 
-The model can make a forecast that is as accurate as feasible since there is enough training data available. To determine if the learning process was sufficiently effective, the test set is employed.
 
-## Weight-Of-Evidence Binning
+## Weight-Of-Evidence (WOE)-Binning
 
-Using the two functions in R: woebin & woebin_ply. As shown below:
+In the following the WOE-Binning is done with the 'woebin' and 'woebin_ply' function. The breaks are generated automated by the function and are saved in the "breaks.list". For the 'woebin' the default 'method="width"' is used. 
 
-- WOE-Binning of predictor variables (used method: "width"):
 
 ```{r echo=T, results='hide'}
 # Binning of train data
@@ -156,20 +161,30 @@ bins.list = woebin(data_f.list$train,
                    save_breaks_list = "breaks.list")
 ```
 
+Below the 7 predictor variables with the highest information value are shown in descending order. This does not mean that these values are the final 7 predictor variables. The Full plots of all predictor variables can be viewed in the Appendix. 
 
 ```{r fig.height=2, fig.align='center', echo=FALSE}
-woebin_plot(bins.list)
+woebin_plot(bins.list$status.of.existing.checking.account)
+woebin_plot(bins.list$credit.history)
+woebin_plot(bins.list$duration.in.month)
+woebin_plot(bins.list$credit.amount)
+woebin_plot(bins.list$purpose)
+woebin_plot(bins.list$age.in.years)
+woebin_plot(bins.list$savings.account.and.bonds)
 ```
 
+After the WOE-Binning, the train and test data is transformed with the generated 'bins.list' into the prescribed format for later usage in glm and scorecard building.
 
-- Transformation of predictor variables WOE and GRP:
 ```{r echo=TRUE, results='hide'}
 # WOE-Transformation of train and test data
 data_woe.list = lapply(data_f.list,
                        function(x) woebin_ply(x, bins.list))
 lapply(data_woe.list, class)
 lapply(data_woe.list, dim)
+```
 
+Transformation of "data_f.list", "bins.list" into data_grp.list - Bin-Group (GRP). We will later use this for validation and the glm. The functionality of building a scorecard with the GRP-Binning isn't implemented in the package at the current state. 
+```{r echo=TRUE, results='hide'}
 # Bin-Group (GRP) Transformation of train and test data
 data_grp.list = lapply(data_f.list, 
                        function(x) woebin_ply(x, bins.list, to = 'bin'))
@@ -256,6 +271,14 @@ perf_eva(pred = predProb_grp.list,
 # Summary
 
 TODO
+
+# Appendix
+
+## Full List of WOE-Binnined predictor variables
+
+```{r fig.height=2, fig.align='center', echo=FALSE}
+woebin_plot(bins.list)
+```
 
 
 
