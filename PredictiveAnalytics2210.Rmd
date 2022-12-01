@@ -347,10 +347,10 @@ The calculated scorepoints of the applicants of the "germancredit" data can only
 head(score_woe_second_iteration.list$train)
 ```
 
-From the report that was created above for the scorecard with WOE-transformed predictor variables, it can be can be seen that the target score is 600 and the target predicted probability is 5,26%. That means, that applicants with a score below 600 and with a predicted probability below 5,26& are declined. 
+From the report that was created above for the scorecard with WOE-transformed predictor variables, it can be can be seen that the target score is 600 and the target predicted probability is 5,26%. That means, that applicants with a score below 600 and with a predicted probability of default higher than 5,26% are declined. 
 
 ## Gini Coefficient In-Sample and Out-of-Sample
-Below the prediction power of the proposed predictor variables is validated through the In-Sample and Out-of-Sample testing. The full validation is done with the predicted scores in "score_woe_second_iteration.list" and the function perf_eva. To further validate the scorecard the Gini-Coefficient of "second_woe_second_iteration.list", "data_woe_second_iteration.glm" and "data_grp_second_iteration.glm" is calculated with the perf_eva function. 
+Below the prediction power of the proposed predictor variables is validated through the In-Sample and Out-of-Sample testing. The full validation is done with the predicted scores in "score_woe_second_iteration.list" and the function perf_eva. To further validate the scorecard the Gini-Coefficient of "data_woe_second_iteration.glm" and "data_grp_second_iteration.glm" is calculated as well. 
 
 ```{r echo=TRUE}
 #Scorecard Model second iteration
@@ -363,7 +363,7 @@ perf_eva(pred = score_woe_second_iteration.list,
 
 
 ```{r echo=TRUE}
-#Second iteration GLM with WOE-Binning 
+#WOE-Binning, second iteration GLM with 7 predictor variables  
 predProb_woe.list <- lapply(data_woe.list,
                         function(x) predict(data_woe_second_iteration.glm,
                                             type = 'response',
@@ -378,7 +378,7 @@ perf_eva(pred = predProb_woe.list,
 
 
 ```{r echo=TRUE}
-#Second iteration GLM with GRP-Binning
+#GRP-Binning, second iteration GLM with 7 predictor variables
 predProb_grp.list <- lapply(data_grp.list,
                             function(x) predict(data_grp_second_iteration.glm,
                                                 type = 'response',
@@ -405,6 +405,8 @@ TODO
 # Appendix
 
 ## Full List of WOE-Binnined predictor variables
+
+Bellow the full list Bins
 
 ```{r fig.height=2, fig.align='center', echo=FALSE}
 woebin_plot(bins.list)
