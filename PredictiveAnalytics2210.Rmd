@@ -28,7 +28,9 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 # Abstract {.unnumbered}
 
-Credit scorecards are crucial tools in the credit assessment process. They are based on the prior performance of clients that share the same traits as a new client. Consequently, the goal of a credit scorecard is to estimate risk because credit scorecards are based on the past behavior of clients that share the same qualities as a prospective client. Therefore, the primary purpose of it is to either approve or reject a new client's loan request. The scorecard's function is to support this option. In this assignment, we'll compare and contrast the binning techniques known as weight-of-evidence (woe) binning and group binning. That's why we have been using the existing scorecard. Moreover, certain model changes and binning splits will be made as a result of the addition of the 7 variables. To evaluate the effectiveness of the scorecard, the Gini coefficient is used. The major results of this research were to: demonstrate that group binning outperforms woe binning in out-of-sample predictions as measured by the Gini coefficient. The dependent variable, credibility, may be predicted more precisely when more independent variables are included.
+Giving new customers credit results in two options: approve their loan request or deny their application. The scorecard's function is to support this choice. Consequently, credit scoring is a mechanism used to assess the degree of risk connected to a particular application. This tool consists of a set of statistically significant characteristics that may be used to predictably distinguish between good and negative things. Any sources of information that the lender has access to at the time of the application may be used to choose the scorecard variables.
+
+A credit scorecard is, in a much more formal sense, a statistical model that forecasts the likelihood of default for a client applying a certain set of criteria. When a consumer misses a payment or otherwise violates the terms of a loan, this is known as defaulting in the banking industry.
 
 # Introduction
 
@@ -42,28 +44,56 @@ Therefore, group binning will be used as an extra binning strategy for this proj
 
 ## Predictor Variable Transformation
 
-Transforming predictor variables with the Weight of Evidence (WOE) approach. The WOE describes how well an independent variable may predict the outcome of a dependent variable.
-
-The WOE cannot be determined until the data has been separated into bins. This value is used for future calculations in place of the original value once the WOE has been located. As a result, upon transformation, the WOE will be the same for all lines that include the variable in the same bin.
-
-If the WOE is greater than one, then the Distribution of the Goods is greater than the Bads, if the WOE is smaller than one, then the Distribution of the Goods is less than the Distribution of the Bads.
-
-There are benefits to this transformation: Because the data is categorized with the simple treatment of the missing values, outliers are no longer a concern. Additionally, it supports categorical and continuous numbers.
-
-Using the two functions in R:
-
- woebin: This function determines the best binning.
-
- woebin_ply: This function applies the provided binning information to convert the values in the original data to WOE values. 
-
-There will be some drawbacks for WOE as well. One is that binning may result in information loss. Another is the possibility of an unresearched link between the independent variables.
+The commonly-used method of Weight of Evidence (WOE) was employed to get an estimate on the predictive power of the individual, independent attributes with regards to the credit risk. The WOE approach is used to change each independent variable. This technique analyzes the "strength" of grouping for separating good and bad risk based on the ratio of good applicants to bad applicants at each group level and seeks to establish a monotonic connection between the independent variables and the target variable.
 
 
 ```{=tex}
 \begin{align} \label{eq:WOE}
-WOE = \frac{Distribution of Goods}{Distribution of Bads}
+WOE = ln(\frac{Distribution of Goods}{Distribution of Bads})*100
 \end{align}
 ```
+
+The transformation steps can be considered as follow:
+
+
+- Divide the data into bins, often 10 or 20 at most.
+
+- Estimate the percentage of good and bad customers.
+
+- Take the natural log and use that to calculate the WOE.
+    
+- Substitute the estimated WOE values for the original data.
+
+
+Negative cases take precedence over positive ones if WOE values are negative. Positive cases take precedence over negative ones if WOE values are positive.
+
+
+This accomplishes the following goals:
+
+- All non-linear correlations are removed.
+  
+- All variables are scaled automatically to some extent.
+
+- Categorical variables are converted to continuous variables.
+
+- Missing Data may be treated as a simple factor value.
+
+We could create a standalone scorecard that a person could manually fill out with a pen and a printout of all pertinent factors.
+
+
+
+
+The following downsides apply to it:
+
+- Binning always results in information loss.
+
+    Score growth along single variables is not continuous and happens in stages.
+
+    Binning calls for manual editing.
+
+    Comparing logistic regression with classically scaled variables makes calculating variable relevance more difficult.
+
+
 ## Logistic Regression Analysis
 
 Logistic Regression (also known as Logit-Model) is a statistical Model that can estimate probability of a certain event happening based on one or more independent variables. Its application is widespread in various statistical methods, especially in classification problems and prediction analyses. Contrary to linear regression, the predicted variable in logistic regression is a Bernoulli variable, i.e. a binary random variable $k$ with:
