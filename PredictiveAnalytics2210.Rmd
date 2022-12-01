@@ -207,7 +207,7 @@ breaks.list=list(
  )
 ```
 
-Below the binning of the seven predictor variables with the highest information value is shown in descending order. This does not mean that these values are the final seven predictor variables. The full plots of all predictor variables can be viewed in the Appendix. 
+Below plots of seven predictor variables with the highest information value are shown in descending order. This does not mean that these values are the final seven predictor variables. The full plots of all predictor variables can be viewed in the Appendix. 
 
 ```{r fig.height=2, fig.align='center', echo=FALSE}
 woebin_plot(bins.list$status.of.existing.checking.account)
@@ -377,10 +377,10 @@ The calculated scorepoints of the applicants of the "germancredit" data can only
 head(score_woe_second_iteration.list$train)
 ```
 
-From the report that was created above for the scorecard with WOE-transformed predictor variables, it can be can be seen that the target score is 600 and the target predicted probability is 5,26%. That means, that applicants with a score below 600 and with a predicted probability below 5,26& are declined. 
+From the report that was created above for the scorecard with WOE-transformed predictor variables, it can be can be seen that the target score is 600 and the target predicted probability is 5,26%. That means, that applicants with a score below 600 and with a predicted probability of default higher than 5,26% are declined. 
 
 ## Gini Coefficient In-Sample and Out-of-Sample
-Below the prediction power of the proposed predictor variables is validated through the In-Sample and Out-of-Sample testing. The full validation is done with the predicted scores in "score_woe_second_iteration.list" and the function perf_eva. To further validate the scorecard the Gini-Coefficient of "second_woe_second_iteration.list", "data_woe_second_iteration.glm" and "data_grp_second_iteration.glm" is calculated with the perf_eva function. 
+Below the prediction power of the proposed predictor variables is validated through the In-Sample and Out-of-Sample testing. The full validation is done with the predicted scores in "score_woe_second_iteration.list" and the function perf_eva. To further validate the scorecard the Gini-Coefficient of "data_woe_second_iteration.glm" and "data_grp_second_iteration.glm" is calculated as well. 
 
 ```{r echo=TRUE}
 #Scorecard Model second iteration
@@ -393,7 +393,7 @@ perf_eva(pred = score_woe_second_iteration.list,
 
 
 ```{r echo=TRUE}
-#Second iteration GLM with WOE-Binning 
+#WOE-Binning, second iteration GLM with 7 predictor variables  
 predProb_woe.list <- lapply(data_woe.list,
                         function(x) predict(data_woe_second_iteration.glm,
                                             type = 'response',
@@ -408,7 +408,7 @@ perf_eva(pred = predProb_woe.list,
 
 
 ```{r echo=TRUE}
-#Second iteration GLM with GRP-Binning
+#GRP-Binning, second iteration GLM with 7 predictor variables
 predProb_grp.list <- lapply(data_grp.list,
                             function(x) predict(data_grp_second_iteration.glm,
                                                 type = 'response',
@@ -427,7 +427,8 @@ perf_eva(pred = predProb_grp.list,
 |Second iteration WOE-Binning | 0.6444203 | 0.5346227	 |
 |Second iteration GRP-Binning | 0.6502033 | 0.5352568 |
 
-As expected the In-Sample Gini-Coefficient is much higher as the OoS-Gin-Coeficient, but still performing well with over 50%. The differences in the OoS testing are marginal raging from 0.5346227 (WOE-Binning) to 0.5352568 (GRP-Binning) having only a difference of 0.0006341. As stated by Peussa (2016) the OoS-Gini Coefficient lies between 10 and 50%, having 53.53% it could be shown that the approach used works. \cite[p.~24]{peussa2016credit}
+As expected the In-Sample Gini-Coefficient is much higher as the OoS-Gin-Coefficient, but still performing well with over 50%. The Out-of-Sample testing represents a real world data set much better than the In-Sample testing.
+The differences in the OoS testing are marginal ranging from 0.5346227 (WOE-Binning) to 0.5352568 (GRP-Binning) having only a difference of 0.0006341. As stated by Peussa (2016) the OoS-Gini Coefficient should lie between 10% and 50%, having 53.53% shows that the used approach is working. \cite[p.~24]{peussa2016credit}
 # Summary
 
 TODO
@@ -435,6 +436,8 @@ TODO
 # Appendix
 
 ## Full List of WOE-Binnined predictor variables
+
+Bellow the full list of binned possible predictor varibles.
 
 ```{r fig.height=2, fig.align='center', echo=FALSE}
 woebin_plot(bins.list)
