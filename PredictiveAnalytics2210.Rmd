@@ -396,10 +396,7 @@ perf_eva(pred = predProb_grp.list,
 |Second iteration WOE-Binning | 0.6444203 | 0.5346227	 |
 |Second iteration GRP-Binning | 0.6502033 | 0.5352568 |
 
-As expected the In-Sample Gini-Coefficient is much higher as the OoS-Gin-Coeficient, but still performing well with over 50%. The differences in the OoS testing are marginal raging from 0.5346227 (WOE-Binning) to 0.5352568 (GRP-Binning) having only a difference of 0.0006341. As stated by Peussa (2016) the OoS-Gini Coefficient lies between 10 and 50%, having 53.53% it could be shown that the approach used works.
-(QUELLE: CREDIT RISK SCORECARD ESTIMATION BY LOGISTIC
-REGRESSION, Aleksandr Peussa, May 2016)
-
+As expected the In-Sample Gini-Coefficient is much higher as the OoS-Gin-Coeficient, but still performing well with over 50%. The differences in the OoS testing are marginal raging from 0.5346227 (WOE-Binning) to 0.5352568 (GRP-Binning) having only a difference of 0.0006341. As stated by Peussa (2016) the OoS-Gini Coefficient lies between 10 and 50%, having 53.53% it could be shown that the approach used works. \cite[p.~24]{peussa2016credit}
 # Summary
 
 TODO
