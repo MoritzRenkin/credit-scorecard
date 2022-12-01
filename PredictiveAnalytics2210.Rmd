@@ -56,13 +56,13 @@ WOE = ln(\frac{Distribution of Goods}{Distribution of Bads})*100
 The transformation steps can be considered as follow:
 
 
-- Divide the data into bins, often 10 or 20 at most.
+1. Divide the data into bins, often 10 or 20 at most.
 
-- Estimate the percentage of good and bad customers.
+2. Estimate the percentage of good and bad customers.
 
-- Take the natural log and use that to calculate the WOE.
+3. Take the natural log and use that to calculate the WOE.
     
-- Substitute the estimated WOE values for the original data.
+4. Substitute the estimated WOE values for the original data.
 
 
 Negative cases take precedence over positive ones if WOE values are negative. Positive cases take precedence over negative ones if WOE values are positive.
@@ -87,11 +87,11 @@ The following downsides apply to it:
 
 - Binning always results in information loss.
 
-    Score growth along single variables is not continuous and happens in stages.
+- Score growth along single variables is not continuous and happens in stages.
 
-    Binning calls for manual editing.
+- Binning calls for manual editing.
 
-    Comparing logistic regression with classically scaled variables makes calculating variable relevance more difficult.
+- Comparing logistic regression with classically scaled variables makes calculating variable relevance more difficult.
 
 
 ## Logistic Regression Analysis
@@ -110,17 +110,27 @@ Formally, the logistic regression model estimates probability $p$ of the Bernoul
 p(k) = \frac{e^{{\beta}_0 + {\beta}_1k}}{1 + e^{{\beta}_0 + {\beta_1}k}} = \frac{1}{1 + e^-({{\beta}_0 + {\beta_1}k})}
 \end{align}
 ```
-Figure TODO depicts the logistic regression for two examplary attributes.
 
-In the domain of Credit Scoring, logistic regression is one of the most widely used statistical models. \cite[p.~19]{bolton2009logistic}
+In the domain of Credit Scoring, logistic regression is one of the most widely used statistical models \cite[p.~19]{bolton2009logistic}, mainly because the are simple and easy to implement, with wide-spread support in programming languages and libraries. Another striking advantage in favor of logistic regression in this domain is the absence of necessary major assumptions for variables used.
 
 ## Building Scorecards
 
-lorem impsum
+Statistical and non-statistical methods can be used to create credit scorecards, respectively. Only statistical techniques, such as contingency tables and linear regression models, were employed. This is because, in the context of credit scoring, one might gain from understanding sample estimators and their characteristics, confidence intervals, and hypothesis testing. This information might be applied to determining the relative weights of various traits, both to confirm the relevance of pertinent factors and eliminate irrelevant ones. Here, describing categorical data and concentrating on logistic regression to build a scorecard are the major considerations.
+
+
+From the standpoint of credit scoring, the response variable represents the client's quality (good or poor), and explanatory variables is a list of traits that have discriminating power, or, in other words, that significantly influence whether a customer is good or bad. Therefore, a statistical model demonstrates how explanatory factors affect the response variable.
+
+```{=tex}
+\begin{align} \label{eq:Score}
+Score = \sum_{i=1}^{n} (-(WOE_i * \beta_i + \frac{a}{n})*factor+\frac{offset}{n})
+\end{align}
+```
+
+The regression coefficients are used to scale a scorecard, which is defined as bringing it into compliance with a specific range of points. The logit-transformed prediction probability of logistic regression models is a linear function of the predictor variable values, making them linear models. As a result, a final scorecard model created in this way has the advantageous property that the final credit score (credit risk) is a linear function of the predictors.
 
 ## Forecasting Scorepoints and default Probabilities
 
-lorem impsum
+This step is considered when the linear model is complete and the final scorecard is made, which can then be used to predict probabilities and award points. The likelihood that an application with a specific score would be good or bad. In-sample forecasting and out-of-sample forecasting are two different forms of forecasting.
 
 ## Forecasting Accuracy Testing
 
