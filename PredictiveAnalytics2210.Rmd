@@ -100,6 +100,7 @@ Include test-train split
 
 In this section the approach and the results of building a Out-of-Sample Gini coefficient maximizing scorecard model with only seven predictor variables are presented step-by-step. The scorecard is built on the "germancredit" data which is included in the "scorecard" library.
 
+
 ## Loading and Preparing the Data
 
 The dataset "germancredit" is used from the library "scorecard". Below the import process is shown. The "germancredit" data has 21 variables int total. Seven predictor variables and a single dependent variable the "creditability" will remain for our scorecard model.
