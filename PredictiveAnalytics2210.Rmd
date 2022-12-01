@@ -44,7 +44,7 @@ Therefore, group binning will be used as an extra binning strategy for this proj
 
 ## Predictor Variable Transformation
 
-The commonly-used method of Weight of Evidence (WOE) was employed to get an estimate on the predictive power of the individual, independent attributes with regards to the credit risk. The WOE approach is used to change each independent variable. This technique analyzes the "strength" of grouping for separating good and bad risk based on the ratio of good applicants to bad applicants at each group level and seeks to establish a monotonic connection between the independent variables and the target variable.
+The commonly-used method of Weight of Evidence (WOE) is employed to get an estimate on the predictive power of the individual, independent attributes with regards to the credit risk. The WOE approach is used to change each independent variable. This technique analyzes the "strength" of grouping for separating good and bad risk based on the ratio of good applicants to bad applicants at each group level and seeks to establish a monotonic connection between the independent variables and the target variable.
 
 
 ```{=tex}
@@ -94,6 +94,8 @@ The following downsides apply to it:
 - Comparing logistic regression with classically scaled variables makes calculating variable relevance more difficult.
 
 
+As an alternative to the transformation based on WOE-values, the variables can also be transformed with some pre-defined bin borders. 
+
 ## Logistic Regression Analysis
 
 Logistic Regression (also known as Logit-Model) is a statistical Model that can estimate probability of a certain event happening based on one or more independent variables. Its application is widespread in various statistical methods, especially in classification problems and prediction analyses. Contrary to linear regression, the predicted variable in logistic regression is a Bernoulli variable, i.e. a binary random variable $k$ with:
@@ -130,11 +132,23 @@ The regression coefficients are used to scale a scorecard, which is defined as b
 
 ## Forecasting Scorepoints and default Probabilities
 
-This step is considered when the linear model is complete and the final scorecard is made, which can then be used to predict probabilities and award points. The likelihood that an application with a specific score would be good or bad. In-sample forecasting and out-of-sample forecasting are two different forms of forecasting.
+<!-- This step is considered when the linear model is complete and the final scorecard is made, which can then be used to predict probabilities and award points. The likelihood that an application with a specific score would be good or bad. In-sample forecasting and out-of-sample forecasting are two different forms of forecasting. -->
+
+As described in the previous sections, the devised scorecard model is based on a logistic regression function. The model can be used to predict the likelihood of a potential debtor defaulting on his/her loan, as well as the resulting scorepoints in the context of our scorecard. Based on the forecasted scorepoints a credit applicant can be categorized as either good or bad. 
+
+On a broader scale, the credit scorecard model, which is initially trained with a sample of historical borrower data, allows a banking institution to discriminate "good" from "bad" credit applicants, thereby making the decision whether a loan offer should be extended or not.
+
 
 ## Forecasting Accuracy Testing
 
-Include test-train split
+Testing the accuracy of forecasts is critical to any model that is sought to be applied in a real world scenario. In the banking industry, estimating credit risk is directly linked to a banks profitability as credit interest is usually calculated based on the risk of loan defaults. Since loan interest can be assumed to provide the main income stream for traditional banks (in contrast to investment banks), having even a small edge in risk forecasting accuracy can pose a tremendous competitive advantage. Therefore, this section defines the methodology to evaluate the accuracy of the model forecasts.
+
+When working with predictive models, both statistical and machine-learning-based, the available data is usually split into a training and a test sample. This has become the de-facto standard over the last decades (\cite{traintestsplit}). The training sample is used to fit the model decide on potential hyper-parameters while the testing sample is used only on the final configured and fitted model to evaluate its accuracy. The rationale behind this split is to assess how the model performs on data it was not originally trained on.
+
+Before deciding on how to split the data, it is important to determine if there are any hidden patterns in the data. For example, if the data was split based on a certain attribute, like date, this attribute has to be statistically independent to the target variable. Since no such attributes can be trivially found in the source data, the split is performed randomly with 75% being used as the training sample and the rest as the testing sample. 
+
+In general, the forecasting accuracy can be tested with both using the data it was fitted with (in-sample) and using the independent testing sample (out-of-sample). Discrepancies between the in-sample and out-of-sample results could hint at overfitting of the model. In order to ensure the resilience of the trained model in a real-world scenario, the testing sample shall not be considered for any decisions, or fittings regarding the our scorecard model, until the final out-of-sample test.
+
 
 # Empirical results
 
@@ -168,7 +182,7 @@ ncol(data_f.df)
 
 ## Splitting the Data into Train and Test Samples
 
-The remaining 13 possible predictor variables are splitted with the split_df function into train and test data with a ratio fo 75% train and 25% test data. Afterwards data_f.list is reformated to be useable in the later process. The following scorecard model is only trained on the train data. The test data is later used to validate and test the performance of the scorecard model.
+The remaining 13 possible predictor variables are split with the split_df function into train and test data with a ratio fo 75% train and 25% test data. Afterwards data_f.list is reformatted to be usable in the later process. The following scorecard model is only trained on the train data. The test data is later used to validate and test the performance of the scorecard model.
 
 ```{r echo=T, results='hide'}
 # Splitting data into train and test data with ratio 0.75
@@ -452,9 +466,12 @@ print(perf_grp$binomial_metric$test)
 
 As expected the In-Sample Gini-Coefficient is much higher as the OoS-Gin-Coefficient, but still performing well with over 50%. The Out-of-Sample testing represents a real world data set much better than the In-Sample testing.
 The differences in the OoS testing are marginal ranging from 0.5346227 (WOE-Binning) to 0.5352568 (GRP-Binning) having only a difference of 0.0006341. As stated by Peussa (2016) the OoS-Gini Coefficient should lie between 10% and 50%, having 53.53% shows that the used approach is working. \cite[p.~24]{peussa2016credit}
+
 # Summary
 
-TODO
+The main objective of this paper is the conception and implementation of a scorecard prediction model as well as examine the impact of different binning methods on the model performance. The initial data sample consisting of past credit information was split into training and testing samples with both in-sample and out-of-sample Gini-coefficients being calculate in order to quantify the predictive accuracy of the model. 
+
+TODO gini coefficients results.
 
 # Appendix
 
