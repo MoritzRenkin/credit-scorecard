@@ -402,35 +402,48 @@ perf_eva(pred = score_woe_second_iteration.list,
 ```
 
 
-```{r echo=TRUE}
+```{r echo=FALSE, results='hide'}
 #WOE-Binning, second iteration GLM with 7 predictor variables  
 predProb_woe.list <- lapply(data_woe.list,
                         function(x) predict(data_woe_second_iteration.glm,
                                             type = 'response',
                                             x)
 )
-perf_eva(pred = predProb_woe.list,
+perf_woe <-perf_eva(pred = predProb_woe.list,
          label = default.list,
          binomial_metric = c("gini"),
          show_plot=c(),
          confusion_matrix = FALSE)
 ```
 
+WOE-Binning, second iteration GLM with 7 predictor variables 
+```{r echo=FALSE}
+#WOE-Binning, second iteration GLM with 7 predictor variables 
+print(perf_woe$binomial_metric$train)
+print(perf_woe$binomial_metric$test)
+```
 
-```{r echo=TRUE}
+
+```{r echo=FALSE, results='hide'}
 #GRP-Binning, second iteration GLM with 7 predictor variables
 predProb_grp.list <- lapply(data_grp.list,
                             function(x) predict(data_grp_second_iteration.glm,
                                                 type = 'response',
                                                 x)
 )
-perf_eva(pred = predProb_grp.list,
+perf_grp <- perf_eva(pred = predProb_grp.list,
          label = default.list,
          binomial_metric = c("gini"),
          show_plot=c(),
          confusion_matrix = FALSE)
 ```
 
+GRP-Binning, second iteration GLM with 7 predictor variables 
+```{r echo=FALSE}
+#GRP-Binning, second iteration GLM with 7 predictor variables 
+print(perf_grp$binomial_metric$train)
+print(perf_grp$binomial_metric$test)
+```
 |Method | In-Sample Gini-Coefficient | Out-of-Sample Gini-Coefficient |
  | -------- | -------- | ------- |
 |Second iteration Scorecard | 0.6436704 | 0.5348129	 |
