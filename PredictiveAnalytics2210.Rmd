@@ -7,7 +7,7 @@ author:
   - "Nils Klüwer (12229263)"
   
 
-abstract: "Credit scorecards are crucial tools in the credit assessment process. They are based on the prior performance of clients that share the same traits as a new client. Consequently, the goal of a credit scorecard is to estimate risk because credit scorecards are based on the past behavior of clients that share the same qualities as a prospective client. Therefore, the primary purpose of it is to either approve or reject a new client's loan request. The scorecard's function is to support this option. In this assignment, we'll compare and contrast the binning techniques known as weight-of-evidence (woe) binning and group binning. That’s why we have been using the existing scorecard. Moreover, certain model changes and binning splits will be made as a result of the addition of the 7 variables. To evaluate the effectiveness of the scorecard, the Gini coefficient is used. The major results of this research were to: demonstrate that group binning outperforms woe binning in out-of-sample predictions as measured by the Gini coefficient. The dependent variable, credibility, may be predicted more precisely when more independent variables are included."
+abstract: "Credit scorecards are crucial tools in the credit assessment process. They are based on the prior performance of clients that share the same traits as a new client. Consequently, the goal of a credit scorecard is to estimate risk because credit scorecards are based on the past behavior of clients that share the same qualities as a prospective client. Therefore, the primary purpose of it is to either approve or reject a new client's loan request. The scorecard's function is to support this option. In this assignment, we'll compare and contrast the binning techniques known as weight-of-evidence (woe) binning and group binning. That’s why we have been using the existing scorecard. Moreover, certain model changes and binning splits will be made as a result of the addition of the 7 variables. To evaluate the effectiveness of the scorecard, the Gini coefficient is used. The major results of this research were: demonstrate that group binning outperforms woe binning in out-of-sample predictions as measured by the Gini coefficient. The dependent variable, creditability, may be predicted more precisely when more independent variables are included."
 date: "November, 2022"
 output:
   pdf_document:
@@ -36,7 +36,7 @@ A credit scorecard is, in a much more formal sense, a statistical model that for
 
 In the form of a score and a likelihood of default, credit scoring models and scorecards estimate the risk that a borrower won't return a loan.
 
-For instance, a credit scorecard may award a borrower points based on the following table for their age and income. As previously noted, a single dependent variable, credibility, was predicted using seven independent variables. As a binning strategy, the Weight-of-Evidence technique was adopted.
+For instance, a credit scorecard may award a borrower points based on the following table for their age and income. As previously noted, a single dependent variable, creditability, was predicted using seven independent variables. As a binning strategy, the Weight-of-Evidence technique was adopted.
 
 Therefore, group binning will be used as an extra binning strategy for this project's execution. To increase the model's Gini coefficient of prediction, a seventh independent variable was added, and the binning breaks were modified.
 
@@ -465,7 +465,7 @@ The differences in the OoS testing are marginal ranging from 0.5346227 (WOE-Binn
 
 # Summary
 
-The main objective of this paper is the conception and implementation of a scorecard prediction model as well as examine the impact of different binning methods on the model performance. The initial data sample consisting of past credit information was split into training and testing samples with both in-sample and out-of-sample Gini-coefficients being calculate in order to quantify the predictive accuracy of the model. 
+The main objective of this paper is the conception and implementation of a scorecard prediction model as well as examine the impact of different binning methods on the model performance. The initial data sample consisting of past credit information was split into training and testing samples with both in-sample and out-of-sample Gini-coefficients being calculatated in order to quantify the predictive accuracy of the model. 
 
 The seven most significant attributes have been selected out of the germancredit dataset based on their significance value in the logistic regression models. The scorecard model was then fitted with these attributes. The Gini-coefficients from in-sample and out-of-sample testing indicate a solid predictive accuracy with even the out-of-sample gini-coefficient reaching 53.35%. 
 
