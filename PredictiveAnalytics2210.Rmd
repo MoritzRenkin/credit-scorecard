@@ -231,9 +231,9 @@ breaks.list=list(
  )
 ```
 
-Below plots of seven predictor variables with the highest information value are shown in descending order. This does not mean that these values are the final seven predictor variables. The full plots of all predictor variables can be viewed in the Appendix. 
+Below plots of seven predictor variables with the highest information value are shown in descending order. This does not mean that these values are the final seven predictor variables. <!--The full plots of all predictor variables can be viewed in the Appendix. -->
 
-```{r fig.height=2, fig.align='center', echo=FALSE}
+```{r fig.height=1.5, fig.align='center', echo=FALSE}
 woebin_plot(bins.list$status.of.existing.checking.account)
 woebin_plot(bins.list$credit.history)
 woebin_plot(bins.list$duration.in.month)
@@ -378,9 +378,7 @@ With the scorecard of the logistic regressions of both WOE- and GRP-transformed 
 # Predicted probabilties w.r.t. WOE-transformed predictors
 predProb_woe.list <- lapply(data_woe.list,
                         function(x) predict(data_woe_second_iteration.glm,
-                                            type = 'response',
-                                            x)
-)
+                                            type = 'response',x))
 head(predProb_woe.list$train)
 ```
 
@@ -388,9 +386,7 @@ head(predProb_woe.list$train)
 # Predicted probabilties w.r.t. GRP-transformed predictors
 predProb_grp.list <- lapply(data_grp.list,
                             function(x) predict(data_grp_second_iteration.glm,
-                                                type = 'response',
-                                                x)
-)
+                                                type = 'response',x))
 head(predProb_grp.list$train)
 ```
 
@@ -471,8 +467,9 @@ The differences in the OoS testing are marginal ranging from 0.5346227 (WOE-Binn
 
 The main objective of this paper is the conception and implementation of a scorecard prediction model as well as examine the impact of different binning methods on the model performance. The initial data sample consisting of past credit information was split into training and testing samples with both in-sample and out-of-sample Gini-coefficients being calculate in order to quantify the predictive accuracy of the model. 
 
-TODO gini coefficients results.
+The seven most significant attributes have been selected out of the germancredit dataset based on their significance value in the logistic regression models. The scorecard model was then fitted with these attributes. The Gini-coefficients from in-sample and out-of-sample testing indicate a solid predictive accuracy with even the out-of-sample gini-coefficient reaching 53.35%. 
 
+<!--
 # Appendix
 
 ## Full List of WOE-Binnined predictor variables
@@ -482,7 +479,7 @@ Bellow the full list of binned possible predictor varibles.
 ```{r fig.height=2, fig.align='center', echo=FALSE}
 woebin_plot(bins.list)
 ```
-
+-->
 
 
 
