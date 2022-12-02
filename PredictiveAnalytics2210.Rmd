@@ -7,7 +7,7 @@ author:
   - "Nils Klüwer (12229263)"
   
 
-abstract: "Credit scorecards are crucial tools in the credit assessment process. They are based on the prior performance of clients that share the same traits as a new client. Consequently, the goal of a credit scorecard is to estimate risk because credit scorecards are based on the past behavior of clients that share the same qualities as a prospective client. Therefore, the primary purpose of it is to either approve or reject a new client's loan request. The scorecard's function is to support this option. In this assignment, we'll compare and contrast the binning techniques known as weight-of-evidence (woe) binning and group binning. That’s why we have been using the existing scorecard. Moreover, certain model changes and binning splits will be made as a result of the addition of the 7 variables. To evaluate the effectiveness of the scorecard, the Gini coefficient is used. The major results of this research were: demonstrate that group binning outperforms woe binning in out-of-sample predictions as measured by the Gini coefficient. The dependent variable, creditability, may be predicted more precisely when more independent variables are included."
+abstract: "Estimating credit risk is a fundamental capability in the traditional banking business. The rate of loan defaults has an enormous impact on a banks performance. In order to minimize their default rates, banks can employ predictive models to predict credit default risks and reject loan offers with increased projected risk based on well-defined policies. One oft-quoted method used for assessing potential loan application is the credit risk scorecard. The credit risk scorecard model attempts to estimate the probability of a potential debtor to repay its debts in accordance with the terms agreed. As a quantitative tool, it can provide the basis for making the decision whether to grant a loan or not, enabling banks to let data drive their most crucial business decisions. In a formal sense, the credit risk scorecard model is a statistical model which can be fit with historic credit and creditor information and subsequently estimate the creditability of new credit applicants by assigning them a credit score. This paper aims to provide both the theoretical foundation of how to build such a scorecard model as well as a technical implementation and case study demonstrating the capability of the devised model."
 date: "November, 2022"
 output:
   pdf_document:
@@ -28,17 +28,23 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 # Abstract {.unnumbered}
 
-Giving new customers credit results in two options: approve their loan request or deny their application. The scorecard's function is to support this choice. Consequently, credit scoring is a mechanism used to assess the degree of risk connected to a particular application. This tool consists of a set of statistically significant characteristics that may be used to predictably distinguish between good and negative things. Any sources of information that the lender has access to at the time of the application may be used to choose the scorecard variables.
+Estimating credit risk is a fundamental capability in the traditional banking business. The rate of loan defaults has an enormous impact on a banks performance. In order to minimize their default rates, banks can employ predictive models to predict credit default risks and reject loan offers with increased projected risk based on well-defined policies.
 
-A credit scorecard is, in a much more formal sense, a statistical model that forecasts the likelihood of default for a client applying a certain set of criteria. When a consumer misses a payment or otherwise violates the terms of a loan, this is known as defaulting in the banking industry.
+One oft-quoted method used for assessing potential loan application is the credit risk scorecard. The credit risk scorecard model attempts to estimate the probability of a potential debtor to repay its debts in accordance with the terms agreed. As a quantitative tool, it can provide the basis for making the decision whether to grant a loan or not, enabling banks to let data drive their most crucial business decisions.
+
+In a formal sense, the credit risk scorecard model is a statistical model which can be fit with historic credit and creditor information and subsequently estimate the creditability of new credit applicants by assigning them a credit score. This paper aims to provide both the theoretical foundation of how to build such a scorecard model as well as a technical implementation and case study demonstrating the capability of the devised model.
+<!--
+Giving new customers credit results in two options: approve their loan request or deny their application. The scorecard's function is to support this choice. Consequently, credit scoring is a mechanism used to assess the degree of risk connected to a particular application. This tool consists of a set of statistically significant characteristics that may be used to predictably distinguish between good and negative things. Any sources of information that the lender has access to at the time of the application may be used to choose the scorecard variables.-->
+
+
 
 # Introduction
 
-In the form of a score and a likelihood of default, credit scoring models and scorecards estimate the risk that a borrower won't return a loan.
+In the form of a score and a likelihood of default, credit scoring models and scorecards estimate the risk that a borrower will not return a loan.
 
-For instance, a credit scorecard may award a borrower points based on the following table for their age and income. As previously noted, a single dependent variable, creditability, was predicted using seven independent variables. As a binning strategy, the Weight-of-Evidence technique was adopted.
+For instance, a credit scorecard may award a borrower points based on the following table for their age and income. As previously noted, a single dependent variable, creditability, was predicted using seven independent variables. As a variable transformation strategy, the Weight-of-Evidence technique was adopted.
 
-Therefore, group binning will be used as an extra binning strategy for this project's execution. To increase the model's Gini coefficient of prediction, a seventh independent variable was added, and the binning breaks were modified.
+Therefore, group binning will be used as an extra transfomration strategy for this project's execution. To increase the model's Gini coefficient of prediction, a seventh independent variable was added, and the binning breaks were modified.
 
 # Predictive Analytics Research Methodology
 
