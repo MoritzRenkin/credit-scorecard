@@ -2,7 +2,7 @@
 title:  '\begin{center} Predictive Analytics: Credit Risk Scorecard Application \\ Case Study: Group 15 \\  \end{center}'
 author:
   - "Jacob Heye Hilbrands (12229285)"
-  - "Mustafa Alsudani (1214099)"
+  - "Mustafa Alsudani (12140998)"
   - "Moritz Renkin (11807211)"
   - "Nils Klüwer (12229263)"
   
